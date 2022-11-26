@@ -1,0 +1,22 @@
+# Emotional Engine
+version: '3.8'
+
+services:
+  mongodb:
+        image: mongo
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: emotionalengine
+          #networks:
+                #EmoEngine:
+                  #ipv4_address: 172.29.0.4
+        container_name: mongodb
+        ports:
+          - 27017:27017
+        restart: always
+        volumes:
+          - /home/administrator/mpsiee/mongodb/data:/data/db
+          - /home/administrator/mpsiee/mongodb/addRole.js:/addRole.js
+          - /home/administrator/mpsiee/mongodb/addUser.js:/addUser.js
+

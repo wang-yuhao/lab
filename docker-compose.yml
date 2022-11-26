@@ -1,0 +1,35 @@
+# Emotional Engine
+version: '3.8'
+
+services:
+# Backend
+  data_automation:
+    build: ./data_automation/
+    container_name: data_automation
+    volumes:
+      - ./data_automation/data:/code/data
+    links:
+      - mongodb
+
+  fastapi:
+    build: ./api/
+    container_name: ee_api
+    ports:
+      - 8000:8000
+    links:
+      - mongodb
+
+  mongodb:
+    image: mongo:4.4.6
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: emotionalengine
+    container_name: mongodb
+    ports:
+      - 8081:27017
+    restart: always
+    volumes:
+      - /home/administrator/MP_EmotionEngine/mongodb/data:/data/db
+      - /home/administrator/MP_EmotionEngine/mongodb/addRole.js:/addRole.js
+      - /home/administrator/MP_EmotionEngine/mongodb/addUser.js:/addUser.js
