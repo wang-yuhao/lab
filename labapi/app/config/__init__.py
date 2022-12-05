@@ -12,8 +12,8 @@ class ServerSettings(BaseSettings):
 
 
 class DatabaseSettings(BaseSettings):
-    DB_URL: str = "mongodb://10.253.4.75:27017/admin?w=majority&readPreference=primary&retryWrites=true&directConnection=true&ssl=false"
-    DB_NAME: str = "mpee"
+    DB_URL: str = "mongodb://10.0.2.15:8081/admin?w=majority&readPreference=primary&retryWrites=true&directConnection=true&ssl=false"
+    DB_NAME: str = "consious"
     DB_USER: str = "admin"
     DB_PASSWORD: str = "password"
 
@@ -39,6 +39,7 @@ class ProfileUserModel(BaseModel):
     birth_date: str = Field(...)
     country: str = Field(...)
     ort: str = Field(...)
+    role: str = Field(...)
 
     class Config:
         allow_population_by_field_name = True
@@ -51,6 +52,7 @@ class ProfileUserModel(BaseModel):
                 'birth_date': "2000-01-01",
                 'country': "China",
                 'ort': "Shanghai",
+                'role': "customer"
             }
         }
 

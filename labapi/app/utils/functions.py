@@ -80,11 +80,21 @@ async def get_current_user(request: Request, token: str = Depends(reuseable_oaut
             headers={"WWW-Authenticate": "Bearer"},
         )
     user: Union[dict[str, Any], None] = await request.app.mongodb["user"].find_one({"email": token_data.sub})
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Could not find user",
-        )
+    if user:
+        user["role"] = "customer"
+    else:
+        user: Union[dict[str, Any], None] = await request.app.mongodb["employee"].find_one({"email": token_data.sub})
+        if user:
+            user["role"] = "employee"
+        else:
+            user: Union[dict[str, Any], None] = await request.app.mongodb["admin"].find_one({"email": token_data.sub})
+            if user:
+                user["role"] = "admin"
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Could not find user",
+                    )
     return ProfileUserModel(**user)
 
 

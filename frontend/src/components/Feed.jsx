@@ -1,8 +1,3 @@
-import { popularProducts } from "../data";
-import Product from "./Product";
-
-
-
 import React, { useState, useEffect } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -116,7 +111,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 
-export const Products = () => {
+export const Feed = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -217,9 +212,104 @@ export const Products = () => {
                     <Grid xs={12} className="pt-4 square bg-light">
                         <Box>
                             <CssBaseline />
-                            {popularProducts.map((item) => (
-                              <Product item={item} key={item.id} />
-                            ))}
+                            <Box className="mx-5">
+                                <form onSubmit={handleSubmit}>
+                                    <MDBCardBody className='text-black d-flex flex-column justify-content-center'>
+                                        <h3 className="mb-5 text-uppercase fw-bold">Profile</h3>
+                                        <TextField id="name" label="Name" value={name}
+                                            onChange={(e) => setName(e.target.value)} variant="outlined" className='mb-4' />
+                                        <LocalizationProvider dateAdapter={AdapterDayjs} wrapperClass='mb-4'>
+                                            <DatePicker
+                                                disableFuture
+                                                label="Birth date"
+                                                openTo="year"
+                                                views={['year', 'month', 'day']}
+                                                value={birthdate}
+                                                onChange={(newValue) => {
+                                                    setBirthdate(newValue);
+                                                }}
+                                                renderInput={(params) => <TextField {...params} />}></DatePicker>
+                                        </LocalizationProvider>
+
+                                        <FormLabel id="demo-row-radio-buttons-group-label" className='mt-4' >Gender</FormLabel>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="demo-row-radio-buttons-group-label"
+                                            name="row-radio-buttons-group"
+                                            className='mb-4'
+                                            value={gender}
+                                            defaultValue={gender}
+                                            onChange={(e) => setGender(e.target.value)}
+                                        >
+                                            <FormControlLabel value="female" control={<Radio />} label="Female" />
+                                            <FormControlLabel value="male" control={<Radio />} label="Male" />
+                                            <FormControlLabel value="other" control={<Radio />} label="Other" />
+                                        </RadioGroup>
+                                        <MDBRow>
+                                            <MDBCol md='6'>
+                                                <Autocomplete
+                                                    id="country"
+                                                    //sx={{ width: 300 }}
+                                                    options={countries}
+                                                    value={countries}
+                                                    onChange={(event, value) => setCountry(value)}
+                                                    //defaultValue={{ code: 'CN', label: 'China', phone: '86' }}
+                                                    autoHighlight
+                                                    //getOptionLabel={(option) => option.label}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            label="Choose a country"
+                                                            // onChange={(e) => setOrt(e.target.value)}
+                                                            inputProps={{
+                                                                ...params.inputProps,
+                                                                autoComplete: 'new-password', // disable autocomplete and autofill
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            </MDBCol>
+                                            <MDBCol md='6'>
+                                                <Autocomplete
+                                                    id="ort"
+                                                    //sx={{ width: 200 }}
+                                                    options={china_provinces}
+                                                    value={ort}
+                                                    onChange={(event, value) => setOrt(value)}
+                                                    autoHighlight
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            label="Choose a ort"
+                                                            // onChange={(e) => setOrt(e.target.value)}
+                                                            inputProps={{
+                                                                ...params.inputProps,
+                                                                autoComplete: 'new-password', // disable autocomplete and autofill
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <TextField id="email" label="Email" size="lg" variant="outlined" value={email}
+                                            onChange={(e) => setEmail(e.target.value)} type='email' inputProps={{ readOnly: true }} className='my-4' />
+                                        <TextField id="phone" label="Phone" variant="outlined" value={phone}
+                                            onChange={(e) => setPhone(e.target.value)} type='text' className='mb-4' />
+                                        <TextField id="password" label="Password" variant="outlined" value={password}
+                                            onChange={(e) => setPassword(e.target.value)} type='password' className='mb-4' />
+                                        <div className="d-flex justify-content-end pt-3">
+                                            <Stack direction="row" spacing={2}>
+                                                <Button variant="outlined" startIcon={<RefreshIcon />}>
+                                                    Reset
+                                                </Button>
+                                                <Button variant="contained" type="submit" endIcon={<SendIcon />}>
+                                                    Save
+                                                </Button>
+                                            </Stack>
+                                        </div>
+                                    </MDBCardBody>
+                                </form>
+                            </Box>
                         </Box>
                     </Grid>
                 </Grid>
@@ -227,14 +317,3 @@ export const Products = () => {
         </Box>
     )
 }
-/*const Products = () => {
-  return (
-    <Container>
-      {popularProducts.map((item) => (
-        <Product item={item} key={item.id} />
-      ))}
-    </Container>
-  );
-};*/
-
-export default Products;

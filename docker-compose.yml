@@ -3,17 +3,21 @@ version: '3.8'
 
 services:
 # Backend
-  data_automation:
-    build: ./data_automation/
-    container_name: data_automation
-    volumes:
-      - ./data_automation/data:/code/data
-    links:
-      - mongodb
+  # data_automation:
+    #build: ./data_automation/
+    #container_name: data_automation
+    #volumes:
+    #  - ./data_automation/data:/code/data
+    #links:
+    #  - mongodb
 
   fastapi:
-    build: ./api/
-    container_name: ee_api
+    build: ./labapi/
+    container_name: labapi
+    volumes:
+      - ./labapi/app/config:/code/app/config
+      - ./labapi/app/src:/code/app/src
+      - ./labapi/app/utils:/code/app/utils
     ports:
       - 8000:8000
     links:
@@ -24,7 +28,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: emotionalengine
+      MONGO_INITDB_DATABASE: labapi
     container_name: mongodb
     ports:
       - 8081:27017

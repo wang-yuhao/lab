@@ -56,7 +56,7 @@ def kubernetes_liveness_probe():
 
 # app.include_router(project_router, tags=["projects"], prefix="/project")
 app.include_router(account_router, tags=["accounts"], prefix="/accounts")
-app.include_router(readapi_router, tags=["emotiondata"], prefix="/emotiondata")
+# app.include_router(readapi_router, tags=["emotiondata"], prefix="/emotiondata")
 app.include_router(user_router, tags=["user"], prefix="/user")
 app.include_router(order_router, tags=["order"], prefix="/order")
 app.include_router(employee_router, tags=["employee"], prefix="/employee")

@@ -81,8 +81,9 @@ async def create_employee(data: Employee, request: Request, admin: Admin = Depen
 async def update_employee(data: Employee, request: Request, admin: Admin = Depends(get_current_admin)):
     # querying database to check if employee already exist
     employee_email = await request.app.mongodb["employee"].find_one({"email": data.email})
-    employee_phone = await request.app.mongodb["employee"].find_one({"phone": data.email})
-    if (employee_email is not None) and (employee_phone is not None):
+    #employee_phone = await request.app.mongodb["employee"].find_one({"phone": data.email})
+    # if (employee_email is not None) and (employee_phone is not None):
+    if (employee_email is not None):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="employee with this email or Phone number already exist"

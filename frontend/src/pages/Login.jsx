@@ -6,8 +6,6 @@ import TextField from '@mui/material/TextField';
 import { useNavigate } from "react-router";
 import axios from "axios";
 
-
-
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -15,7 +13,6 @@ const Container = styled.div`
       rgba(255, 255, 255, 0.5),
       rgba(255, 255, 255, 0.5)
     ),
-    url(${process.env.PUBLIC_URL + '/university-of-bonn.jpg'})
       center;
   background-size: cover;
   display: flex;
@@ -107,8 +104,8 @@ const Login = () => {
   };
 
   return (
-    <Container>
-      <Wrapper>
+    <Container style={{ "background-color": "#D2EBCD"}}>
+      <Wrapper className="square border border-dark">
         <Title>SIGN IN</Title>
         <Form onSubmit={handleSubmit}>
           <TextField id="email" label="Email" value={email}

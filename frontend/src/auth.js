@@ -12,6 +12,10 @@ export const setUserName = (name)=>{
     localStorage.setItem('UserName', name)// make up your own token
 }
 
+export const setUserRole = (role)=>{
+    return localStorage.setItem('Role', role)
+}
+
 export const fetchAccessToken = ()=>{
     return localStorage.getItem('UserAccessToken')
 }
@@ -22,6 +26,10 @@ export const fetchRefreshToken = ()=>{
 
 export const fetchUserName = ()=>{
     return localStorage.getItem('UserName')
+}
+
+export const fetchUserRole = ()=>{
+    return localStorage.getItem('Role')
 }
 
 export function RequireToken({children}){

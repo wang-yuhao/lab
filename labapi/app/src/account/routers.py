@@ -17,20 +17,29 @@ from app.utils.functions import (
     get_current_user,
     check_permission
 )
-
+from app.src.user.models import UserModel, UpdateUserModel, CreateUserModel, ResponseUserModel, ProfileUserModel, UserLoginModel
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
 router = APIRouter()
 
 
-@router.post('/create_account', summary="Create new user", response_model=UserOut)
-async def create_user(data: UserAuth, request: Request, user: SystemUser = Depends(get_current_user)):
+@router.post('/create_account', summary="Create new user", response_model=TokenSchema)
+async def create_user(data: CreateUserModel, request: Request):
+# async def create_user(data: UserAuth, request: Request, user: SystemUser = Depends(get_current_user)):
+    """
     if user.role == "User":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="This account does not have permission to use this feature."
         )
+
+    user = {
+        'email': data.email,
+        'password': get_hashed_password(data.password),
+        'id': str(uuid4())
+    }
+    """
     # querying database to check if user already exist
     user = await request.app.mongodb["admin"].find_one({"email": data.email})
     if user is not None:
@@ -38,15 +47,26 @@ async def create_user(data: UserAuth, request: Request, user: SystemUser = Depen
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User with this email already exist"
         )
+
+    created_date = datetime.now()
     user = {
         'email': data.email,
         'password': get_hashed_password(data.password),
+        'name': data.name,
+        'phone_number': data.phone_number,
+        'gender': data.gender,
+        'birth_date': data.birth_date,
+        'created_date': created_date,
+        'country': data.country,
+        'ort': data.ort,
+        'last_login': created_date,
         'id': str(uuid4())
     }
     try:
+        print("user: ", user)
         result = await request.app.mongodb["admin"].insert_one(user)
         print('result %s' % repr(result.inserted_id))
-        return_info = {'email': user["email"], 'id': user["id"]}
+        # return_info = {'email': user["email"], 'id': user["id"]}
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_BAD_REQUEST,
@@ -56,7 +76,7 @@ async def create_user(data: UserAuth, request: Request, user: SystemUser = Depen
     api_info = "post create_account"
     # log_content = filter_by
     ip = request.client.host
-    log_info = {"user": user.email, "api": api_info, "datetime": datetime.now(), "ip": ip, "addInfo": ""}
+    log_info = {"user": data.email, "api": api_info, "datetime": datetime.now(), "ip": ip, "addInfo": ""}
     try:
         result = await request.app.mongodb["log"].insert_one(log_info)
         print('result %s' % repr(result.inserted_id))
@@ -66,7 +86,10 @@ async def create_user(data: UserAuth, request: Request, user: SystemUser = Depen
             status_code=status.HTTP_500_BAD_REQUEST,
             detail="Inserting the log information to database failed!"
         )
-    return return_info
+    return {
+        "access_token": create_access_token(user['email']),
+        "refresh_token": create_refresh_token(user['email']),
+    }
 
 
 @router.put('/delete_account', summary="Delete a user", response_model=UserOut)

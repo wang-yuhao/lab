@@ -55,6 +55,7 @@ class ProfileUserModel(BaseModel):
     birth_date: str = Field(...)
     country: str = Field(...)
     ort: str = Field(...)
+    role: str = Field(...)
 
     class Config:
         allow_population_by_field_name = True
@@ -67,6 +68,7 @@ class ProfileUserModel(BaseModel):
                 'birth_date': "2000-01-01",
                 'country': "China",
                 'ort': "Shanghai",
+                'role': "customer",
             }
         }
 
@@ -84,36 +86,10 @@ class UserLoginModel():
             }
         }
 
-class UserModel(BaseModel):
-    name: str = Field(...)
-    email: str = Field(...)
-    phone_number: str = Field(...)
-    gender: str = Field(...)
-    birth_date: str = Field(...)
-    country: str = Field(...)
-    ort: str = Field(...)
-    created_date: str = Field(...)
-    last_login: str = Field(...)
-
-    class Config:
-        allow_population_by_field_name = True
-        schema_extra = {
-            "example": {
-                "name": "Xiao Ming",
-                "email": "abcd@gmail.com",
-                'phone_number': 1234567,
-                'gender': "man",
-                'birth_date': "2000-01-01",
-                'created_date': "2000-01-01",
-                'last_login': "2000-01-01",
-                'country': "China",
-                'ort': "Shanghai",
-            }
-        }
-
 class CreateUserModel(BaseModel):
     name: str = Field(...)
     email: str = Field(...)
+    role: str = Field(...)
     phone_number: str = Field(...)
     gender: str = Field(...)
     birth_date: str = Field(...)
@@ -127,7 +103,8 @@ class CreateUserModel(BaseModel):
             "example": {
                 "name": "Xiao Ming",
                 "email": "abcd@gmail.com",
-                'phone_number': 1234567,
+                "role": "customer",
+                'phone_number': "1234567",
                 'gender': "man",
                 'birth_date': "2000-01-01",
                 'country': "China",
@@ -140,11 +117,13 @@ class CreateUserModel(BaseModel):
 class UpdateUserModel(BaseModel):
     name: str = Field(...)
     email: str = Field(...)
+    role: str = Field(...)
     phone_number: str = Field(...)
     gender: str = Field(...)
     birth_date: str = Field(...)
     country: str = Field(...)
     ort: str = Field(...)
+    password: str = Field(...)
 
     class Config:
         allow_population_by_field_name = True
@@ -152,11 +131,13 @@ class UpdateUserModel(BaseModel):
             "example": {
                 "name": "Xiao Ming",
                 "email": "abcd@gmail.com",
+                "role": "customer",
                 'phone_number': 1234567,
                 'gender': "man",
                 'birth_date': "2000-01-01",
                 'country': "China",
                 'ort': "Shanghai",
+                'password': "abcd@gmail.com"
             }
         }
 

@@ -79,7 +79,7 @@ async def create_user(data: CreateUserModel, request: Request):
 
 
 @router.post('/update_user', summary="Create a new user", response_model=TokenSchema)
-async def update_user(data: CreateUserModel, request: Request, user: ProfileUserModel = Depends(get_current_user)):
+async def update_user(data: UpdateUserModel, request: Request, user: ProfileUserModel = Depends(get_current_user)):
     # querying database to check if user already exist
     user = await request.app.mongodb["user"].find_one({"email": user.email})
     if user is None:
@@ -141,12 +141,61 @@ async def update_user(data: CreateUserModel, request: Request, user: ProfileUser
         "refresh_token": create_refresh_token(user['email']),
     }
 
+@router.post('/update_user_without_pw', summary="Create a new user", response_model=TokenSchema)
+async def update_user_without_pw(data: UpdateUserModel, request: Request, user: ProfileUserModel = Depends(get_current_user)):
+    # querying database to check if user already exist
+    user = await request.app.mongodb["user"].find_one({"email": user.email})
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User does not exist."
+        )
+    created_date = datetime.now()
+    user = {
+            'email': data.email,
+            'name': data.name,
+            'phone_number': data.phone_number,
+            'gender': data.gender,
+            'birth_date': data.birth_date,
+            'created_date': created_date,
+            'country': data.country,
+            'ort': data.ort,
+            'last_login': created_date,
+            'id': str(uuid4())
+        }
+    try:
+        result = await request.app.mongodb["user"].update_one({'email': data.email},{ "$set": user})
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_BAD_REQUEST,
+            detail="Inserting the user to database failed!"
+        )
+
+    api_info = "post create_account"
+    # log_content = filter_by
+    ip = request.client.host
+    log_info = {"user": user["email"], "api": api_info, "datetime": datetime.now(), "ip": ip, "addInfo": ""}
+    try:
+        result = await request.app.mongodb["log"].insert_one(log_info)
+        print('result %s' % repr(result.inserted_id))
+        # return_info = {'email': user["email"], 'id': user["id"]}
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_BAD_REQUEST,
+            detail="Inserting the log information to database failed!"
+        )
+    return {
+        "access_token": create_access_token(user['email']),
+        "refresh_token": create_refresh_token(user['email']),
+    }
 
 @router.post('/login', summary="Create access and refresh tokens for user", response_model=TokenSchema)
 async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     user = await request.app.mongodb["super_admin"].find_one({"email": form_data.username})
     if user is None:
         user = await request.app.mongodb["user"].find_one({"email": form_data.username})
+    if user is None:
+        user = await request.app.mongodb["admin"].find_one({"email": form_data.username})
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
